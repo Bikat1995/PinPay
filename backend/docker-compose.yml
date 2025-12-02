@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: pinpay
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://user:password@db:5432/pinpay?schema=public
+      JWT_SECRET: your_jwt_secret
+      JWT_REFRESH_SECRET: your_refresh_secret
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
